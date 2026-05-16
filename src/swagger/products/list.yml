@@ -1,0 +1,27 @@
+Lister tous les produits du catalogue.
+---
+tags:
+  - Produits
+security:
+  - Bearer: []
+responses:
+  200:
+    description: Liste de tous les produits
+    schema:
+      type: array
+      items:
+        properties:
+          id:
+            type: integer
+          nom:
+            type: string
+          description:
+            type: string
+          categorie:
+            type: string
+          prix:
+            type: number
+          quantite_stock:
+            type: integer
+  401:
+    description: Token manquant ou invalide

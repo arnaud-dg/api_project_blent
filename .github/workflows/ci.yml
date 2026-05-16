@@ -1,5 +1,6 @@
 name: CI
 
+# Déclenchement : à chaque push ou pull request sur la branche main
 on:
   push:
     branches: [main]
@@ -8,30 +9,38 @@ on:
 
 jobs:
   lint-and-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # machine virtuelle GitHub (Ubuntu)
     strategy:
       matrix:
-        python-version: ["3.11"]
+        python-version: ["3.11"]  # version Python cible
 
     steps:
+      # Récupération du code source du dépôt
       - uses: actions/checkout@v4
 
+      # Installation de uv (gestionnaire de paquets rapide)
+      # enable-cache : réutilise le cache entre les runs pour accélérer l'installation
       - name: Install uv
         uses: astral-sh/setup-uv@v3
         with:
           enable-cache: true
 
+      # Installation de Python via uv
       - name: Set up Python ${{ matrix.python-version }}
         run: uv python install ${{ matrix.python-version }}
 
+      # Installation de toutes les dépendances déclarées dans pyproject.toml
       - name: Install dependencies
         run: uv sync --all-extras
 
+      # Vérification de la qualité du code (imports inutilisés, variables non utilisées, etc.)
       - name: Lint with Ruff
         run: uv run ruff check .
 
+      # Vérification du formatage (échoue si le code n'est pas correctement formaté)
       - name: Check formatting
         run: uv run ruff format --check .
 
+      # Exécution des tests avec rapport de couverture (coverage.xml)
       - name: Run tests
         run: uv run pytest --cov=src --cov-report=xml

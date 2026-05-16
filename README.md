@@ -1,95 +1,163 @@
-# API_Project_Blent
+# API Project Blent
 
-> Projet API du parcours Blent
+> *API REST Flask simulant le back-end d'une pharmacie en ligne (ParaShop) — projet du parcours Blent.*
 
 ![Python](https://img.shields.io/badge/python-3.11+-blue.svg)
+![Flask](https://img.shields.io/badge/flask-3.1-black.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-<!-- Add a CI badge once you push to GitHub:
-![CI](https://github.com/USER/REPO/actions/workflows/ci.yml/badge.svg)
+<!-- Ajouter le badge CI dès le premier push GitHub :
+![CI](https://github.com/arnaud-dg/API_Project_Blent/actions/workflows/ci.yml/badge.svg)
 -->
 
-<!-- Add a hero screenshot or GIF here for visual projects:
-![Screenshot](./docs/screenshot.png)
--->
+## Contexte
 
-## Why this project?
+Projet pédagogique du parcours Blent : conception et développement d'une API REST en
+Python/Flask pour le back-end d'une pharmacie en ligne fictive (**ParaShop**).
+L'API expose trois domaines fonctionnels — authentification, catalogue produits et
+commandes — avec une gestion fine des droits via JWT (utilisateur standard vs admin).
 
-<!--
-One paragraph explaining the problem this solves and for whom.
-Concrete and specific. A non-technical reader should finish this paragraph
-and know why they'd want to use the project.
--->
+## Fonctionnalités
 
-TODO: explain the business context in one paragraph.
+- Authentification par JWT (inscription, connexion, rôle admin via secret partagé)
+- CRUD complet sur le catalogue produits (lecture pour tous, écriture réservée admin)
+- Gestion des commandes avec décrémentation de stock et restauration lors d'une annulation
+- Recherche produits par nom et catégorie
+- Persistance SQLite via SQLAlchemy, script de seed inclus (`uv run python -m src.db_init`)
+- Hashage sécurisé des mots de passe (Werkzeug)
+- Documentation interactive Swagger (`/apidocs`)
+- Suite de tests pytest avec rapport de couverture HTML
 
-## Features
+## Démarrage rapide
 
-<!-- TODO: list what the project does. Bullets, concrete. -->
-
-- TODO
-- TODO
-- TODO
-
-## Quick start
-
-Requirements: Python 3.11+, [uv](https://docs.astral.sh/uv/) installed.
+Prérequis : Python 3.11+, [uv](https://docs.astral.sh/uv/) installé.
 
 ```bash
-# Clone and enter
-git clone <repo-url>
+# Cloner et entrer dans le projet
+git clone https://github.com/arnaud-dg/API_Project_Blent.git
 cd API_Project_Blent
 
-# Install dependencies
-make install-dev
+# Installer les dépendances (prod + dev)
+uv sync --all-extras
 
-# Copy and fill credentials
+# Configurer les variables d'environnement
 cp .env.example .env
-# Edit .env with your values
+# Éditer .env :
+#   SECRET_JWT_TOKEN=<votre_secret_jwt>
+#   ADMIN_SECRET_TOKEN=<votre_secret_admin>
 
-# Run tests to verify setup
-make test
+# Initialiser la base de données avec les données de test
+uv run python -m src.db_init
+
+# Démarrer le serveur
+uv run flask --app src.app run
 ```
 
-## Project structure
+L'API est alors disponible sur `http://localhost:5000`.
+La documentation Swagger est accessible sur `http://localhost:5000/apidocs`.
+
+## Documentation Swagger
+
+![Swagger UI](docs/swagger.jpg)
+
+## Endpoints
+
+### Authentification — `/api/auth`
+
+| Méthode | Route | Description | Auth |
+|---------|-------|-------------|------|
+| POST | `/api/auth/register` | Créer un compte | Non |
+| POST | `/api/auth/login` | Se connecter, retourne un JWT | Non |
+
+### Produits — `/api/produits`
+
+| Méthode | Route | Description | Auth |
+|---------|-------|-------------|------|
+| GET | `/api/produits` | Liste tous les produits | JWT |
+| GET | `/api/produits/<id>` | Détail d'un produit | JWT |
+| GET | `/api/produits/search?nom=&categorie=` | Recherche par nom / catégorie | JWT |
+| POST | `/api/produits` | Créer un produit | Admin |
+| PUT | `/api/produits/<id>` | Modifier un produit | Admin |
+| DELETE | `/api/produits/<id>` | Supprimer un produit | Admin |
+
+### Commandes — `/api/commandes`
+
+| Méthode | Route | Description | Auth |
+|---------|-------|-------------|------|
+| GET | `/api/commandes` | Liste les commandes (toutes si admin, les siennes sinon) | JWT |
+| GET | `/api/commandes/<id>` | Détail d'une commande | JWT |
+| POST | `/api/commandes` | Passer une commande | JWT |
+| PATCH | `/api/commandes/<id>` | Modifier le statut d'une commande | Admin |
+| GET | `/api/commandes/<id>/lignes` | Lignes d'une commande | JWT |
+
+## Authentification
+
+Passer le token JWT dans le header de chaque requête protégée :
+
+```http
+Authorization: <token>
+```
+
+Pour obtenir un accès admin lors de l'inscription, ajouter le champ `secret` avec
+la valeur de `ADMIN_SECRET_TOKEN` dans le corps de la requête `/api/auth/register`.
+
+## Codes de statut HTTP
+
+| Code | Signification |
+|------|---------------|
+| 200 | Succès |
+| 201 | Ressource créée |
+| 400 | Requête invalide (champ manquant ou malformé) |
+| 401 | Token absent ou invalide |
+| 403 | Accès refusé (authentifié mais non autorisé) |
+| 404 | Ressource introuvable |
+
+## Schéma de base de données
+
+![Schéma SQL](docs/SQL_diagram_API_Project_Blent.png)
+
+## Stack technique
+
+- **Langage** : Python 3.11
+- **Framework** : Flask 3.1
+- **ORM / base** : SQLAlchemy, Flask-SQLAlchemy, SQLite
+- **Authentification** : PyJWT, Werkzeug (hashage)
+- **Documentation** : Flasgger (Swagger / OpenAPI)
+- **Gestion des dépendances** : uv + pyproject.toml
+- **Qualité** : Ruff (lint + format), pytest + pytest-cov, mypy, pre-commit
+- **CI/CD** : GitHub Actions (lint, tests, build Docker, déploiement VM)
+
+## Structure du projet
 
 ```
 .
-├── config/         # Environment-specific settings
-├── data/           # Raw and processed data (gitignored)
-├── notebooks/      # Exploratory and reporting notebooks
-├── sql/            # Versioned SQL queries
-├── src/            # Reusable functions (cleaning, viz)
-├── tests/          # Unit tests
-├── outputs/        # Generated reports and figures (gitignored)
-└── docs/           # Methodology and decision records
+├── src/
+│   ├── app.py          # Point d'entrée Flask, enregistrement des blueprints
+│   ├── models.py       # Modèles SQLAlchemy (Utilisateur, Produit, Commande, LigneCommande)
+│   ├── utils.py        # Décorateurs JWT, sérialiseurs, validations
+│   ├── db_init.py      # Script de seed (reset + données de test)
+│   ├── routes/         # Blueprints : auth_routes, product_routes, order_routes
+│   └── swagger/        # Fichiers de documentation Swagger par route
+├── tests/              # Tests pytest (auth, produits, commandes, utils)
+├── docs/               # Documentation (schéma SQL, captures)
+├── .github/workflows/  # CI (lint + tests) et CD (build Docker + déploiement)
+├── Dockerfile
+└── pyproject.toml
 ```
 
-## Tech stack
+## Tests
 
-- **Language**: Python 3.11
-- **Package manager**: uv
-- **Quality**: Ruff, pytest, mypy, pre-commit
-- **CI/CD**: GitHub Actions
+```bash
+# Lancer la suite complète avec rapport de couverture
+uv run pytest
 
-<!-- TODO: add the rest of your stack (pandas, DuckDB, Streamlit, etc.) -->
-
-## Architecture
-
-<!-- TODO: add a Mermaid diagram of the data flow if non-trivial:
-
-```mermaid
-flowchart LR
-    A[Source] --> B[ETL]
-    B --> C[Storage]
-    C --> D[Output]
+# Le rapport HTML est généré dans htmlcov/index.html
 ```
--->
 
-## Author
+## Auteur
 
-**Arnaud Duigou**
+**Arnaud Duigou** — [arnaud.duigou@data-boost.fr](mailto:arnaud.duigou@data-boost.fr)
 
-## License
+## Licence
 
-MIT — see [LICENSE](./LICENSE).
+MIT — voir [LICENSE](./LICENSE).

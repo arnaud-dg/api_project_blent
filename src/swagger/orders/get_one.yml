@@ -1,0 +1,33 @@
+Récupérer le détail d'une commande par son identifiant.
+---
+tags:
+  - Commandes
+security:
+  - Bearer: []
+parameters:
+  - name: id
+    in: path
+    type: integer
+    required: true
+    description: Identifiant de la commande
+responses:
+  200:
+    description: Détail de la commande
+    schema:
+      properties:
+        id:
+          type: integer
+        utilisateur_id:
+          type: integer
+        adresse_livraison:
+          type: string
+        statut:
+          type: string
+        date_commande:
+          type: string
+  400:
+    description: Commande introuvable
+  401:
+    description: Token manquant ou invalide
+  403:
+    description: Accès refusé (commande appartenant à un autre utilisateur)

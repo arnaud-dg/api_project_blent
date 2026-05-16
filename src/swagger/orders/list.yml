@@ -1,0 +1,25 @@
+Lister les commandes. Un admin voit toutes les commandes, un client voit les siennes.
+---
+tags:
+  - Commandes
+security:
+  - Bearer: []
+responses:
+  200:
+    description: Liste des commandes
+    schema:
+      type: array
+      items:
+        properties:
+          id:
+            type: integer
+          utilisateur_id:
+            type: integer
+          adresse_livraison:
+            type: string
+          statut:
+            type: string
+          date_commande:
+            type: string
+  401:
+    description: Token manquant ou invalide

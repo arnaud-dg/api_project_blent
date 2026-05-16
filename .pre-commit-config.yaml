@@ -1,28 +1,23 @@
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks # Hooks liés à la qualité
     rev: v4.6.0
     hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-yaml
-      - id: check-added-large-files
+      - id: trailing-whitespace       # Supprime les espaces en fin de ligne
+      - id: end-of-file-fixer         # Ajoute un saut de ligne en fin de fichier si manquant
+      - id: check-yaml                # Vérifie la syntaxe des fichiers .yml / .yaml
+      - id: check-added-large-files   # Bloque les fichiers > 1 Mo pour ne pas alourdir le dépôt
         args: ['--maxkb=1000']
-      - id: check-merge-conflict
-      - id: detect-private-key
+      - id: check-merge-conflict      # Bloque si des marqueurs de conflit présents
+      - id: detect-private-key        # Bloque si une clé privée SSH/TLS est détectée dans le code
 
-  - repo: https://github.com/astral-sh/ruff-pre-commit
+  - repo: https://github.com/astral-sh/ruff-pre-commit # Linter et formateur Python (Ruff)
     rev: v0.6.9
     hooks:
-      - id: ruff
+      - id: ruff                      # Analyse le code Python et corrige les erreurs automatiquement
         args: [--fix]
-      - id: ruff-format
+      - id: ruff-format               # Formate le code Python
 
-  - repo: https://github.com/kynan/nbstripout
-    rev: 0.7.1
-    hooks:
-      - id: nbstripout
-
-  - repo: https://github.com/gitleaks/gitleaks
+  - repo: https://github.com/gitleaks/gitleaks # Détection de secrets
     rev: v8.18.4
     hooks:
-      - id: gitleaks
+      - id: gitleaks                  # Détecte les secrets (tokens JWT, mots de passe, clés API) dans le code

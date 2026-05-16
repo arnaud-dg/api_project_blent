@@ -1,0 +1,45 @@
+Créer une nouvelle commande pour l'utilisateur connecté.
+---
+tags:
+  - Commandes
+security:
+  - Bearer: []
+consumes:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      required:
+        - adresse_livraison
+        - produits_commandes
+      properties:
+        adresse_livraison:
+          type: string
+          example: 12 rue Victor Hugo, 75011 Paris
+        produits_commandes:
+          type: array
+          items:
+            properties:
+              produit_id:
+                type: integer
+                example: 1
+              quantite:
+                type: integer
+                example: 2
+responses:
+  201:
+    description: Commande créée avec succès
+    schema:
+      properties:
+        message:
+          type: string
+        commande:
+          type: object
+        lignes:
+          type: array
+  400:
+    description: Champ manquant, produit inexistant ou stock insuffisant
+  401:
+    description: Token manquant ou invalide

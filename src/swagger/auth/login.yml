@@ -1,0 +1,38 @@
+Authentifier un utilisateur et obtenir un token JWT.
+---
+tags:
+  - Authentification
+consumes:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      required:
+        - email
+        - mot_de_passe
+      properties:
+        email:
+          type: string
+          example: alice.dupont@example.fr
+        mot_de_passe:
+          type: string
+          example: "Password1!"
+responses:
+  200:
+    description: Connexion réussie, retourne un token JWT à passer dans Authorization
+    schema:
+      properties:
+        message:
+          type: string
+          example: Utilisateur connecté.
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+  400:
+    description: Champ manquant, compte inexistant ou mot de passe invalide
+    schema:
+      properties:
+        error:
+          type: string

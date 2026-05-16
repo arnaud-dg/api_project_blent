@@ -1,0 +1,33 @@
+Récupérer un produit par son identifiant.
+---
+tags:
+  - Produits
+security:
+  - Bearer: []
+parameters:
+  - name: id
+    in: path
+    type: integer
+    required: true
+    description: Identifiant du produit
+responses:
+  200:
+    description: Détail du produit
+    schema:
+      properties:
+        id:
+          type: integer
+        nom:
+          type: string
+        description:
+          type: string
+        categorie:
+          type: string
+        prix:
+          type: number
+        quantite_stock:
+          type: integer
+  401:
+    description: Token manquant ou invalide
+  404:
+    description: Produit non trouvé

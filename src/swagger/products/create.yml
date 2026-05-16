@@ -1,0 +1,45 @@
+Créer un nouveau produit (admin uniquement).
+---
+tags:
+  - Produits
+security:
+  - Bearer: []
+consumes:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      required:
+        - nom
+        - categorie
+        - prix
+        - quantite_stock
+      properties:
+        nom:
+          type: string
+          example: Doliprane 500 mg
+        description:
+          type: string
+          example: Boîte de 16 comprimés.
+        categorie:
+          type: string
+          example: Médicament OTC
+        prix:
+          type: number
+          example: 2.49
+        quantite_stock:
+          type: integer
+          example: 100
+responses:
+  200:
+    description: Produit créé avec succès
+    schema:
+      properties:
+        message:
+          type: string
+  400:
+    description: Champ manquant, format invalide ou produit déjà existant
+  401:
+    description: Token manquant ou invalide

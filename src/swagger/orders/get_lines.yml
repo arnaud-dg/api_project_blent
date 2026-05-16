@@ -1,0 +1,33 @@
+Récupérer les lignes de commande d'une commande.
+---
+tags:
+  - Commandes
+security:
+  - Bearer: []
+parameters:
+  - name: id
+    in: path
+    type: integer
+    required: true
+    description: Identifiant de la commande
+responses:
+  200:
+    description: Liste des lignes de commande
+    schema:
+      type: array
+      items:
+        properties:
+          id:
+            type: integer
+          commande_id:
+            type: integer
+          produit_id:
+            type: integer
+          quantite:
+            type: integer
+          prix_unitaire:
+            type: number
+  400:
+    description: Commande introuvable
+  401:
+    description: Token manquant ou invalide

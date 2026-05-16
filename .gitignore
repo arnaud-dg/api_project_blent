@@ -1,3 +1,6 @@
+# ---- Flask ----
+instance/
+
 # ---- Secrets ----
 .env
 .env.*

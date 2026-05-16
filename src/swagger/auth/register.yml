@@ -1,0 +1,42 @@
+Créer un nouveau compte utilisateur.
+---
+tags:
+  - Authentification
+consumes:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      required:
+        - email
+        - mot_de_passe
+        - nom
+      properties:
+        email:
+          type: string
+          example: alice.dupont@example.fr
+        mot_de_passe:
+          type: string
+          example: "Password1!"
+        nom:
+          type: string
+          example: Alice Dupont
+        secret:
+          type: string
+          description: Token secret pour créer un compte admin (optionnel)
+responses:
+  200:
+    description: Compte créé avec succès
+    schema:
+      properties:
+        message:
+          type: string
+          example: Compte utilisateur créé.
+  400:
+    description: Champ manquant, email invalide, mot de passe faible ou email déjà utilisé
+    schema:
+      properties:
+        error:
+          type: string

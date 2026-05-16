@@ -1,0 +1,40 @@
+Modifier le statut d'une commande (admin uniquement).
+---
+tags:
+  - Commandes
+security:
+  - Bearer: []
+consumes:
+  - application/json
+parameters:
+  - name: id
+    in: path
+    type: integer
+    required: true
+    description: Identifiant de la commande
+  - in: body
+    name: body
+    required: true
+    schema:
+      required:
+        - statut
+      properties:
+        statut:
+          type: string
+          enum:
+            - en_attente
+            - validée
+            - expédiée
+            - annulée
+          example: validée
+responses:
+  200:
+    description: Statut modifié avec succès
+    schema:
+      properties:
+        message:
+          type: string
+  400:
+    description: Statut manquant, invalide, identique ou commande introuvable
+  401:
+    description: Token manquant ou invalide

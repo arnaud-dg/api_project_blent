@@ -1,0 +1,27 @@
+# Environnement virtuel Python
+.venv/
+
+# Secrets — passés en variables d'environnement au runtime
+.env
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Outils de développement
+.git/
+.github/
+.ruff_cache/
+.mypy_cache/
+
+# Tests et notebooks (inutiles en production)
+tests/
+notebooks/
+docs/
+outputs/
+
+# Base de données locale (créée à l'intérieur du conteneur)
+*.db
+
+# uv.lock est inclus dans le build (utilisé par uv sync dans le Dockerfile)

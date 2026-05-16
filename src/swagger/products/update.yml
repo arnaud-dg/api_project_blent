@@ -1,0 +1,50 @@
+Modifier un produit existant (admin uniquement).
+---
+tags:
+  - Produits
+security:
+  - Bearer: []
+consumes:
+  - application/json
+parameters:
+  - name: id
+    in: path
+    type: integer
+    required: true
+    description: Identifiant du produit à modifier
+  - in: body
+    name: body
+    required: true
+    schema:
+      required:
+        - nom
+        - categorie
+        - prix
+        - quantite_stock
+      properties:
+        nom:
+          type: string
+          example: Doliprane 500 mg
+        description:
+          type: string
+          example: Boîte de 16 comprimés.
+        categorie:
+          type: string
+          example: Médicament OTC
+        prix:
+          type: number
+          example: 2.49
+        quantite_stock:
+          type: integer
+          example: 80
+responses:
+  200:
+    description: Produit modifié avec succès
+    schema:
+      properties:
+        message:
+          type: string
+  400:
+    description: Champ manquant, format invalide ou produit introuvable
+  401:
+    description: Token manquant ou invalide
