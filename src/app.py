@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -27,6 +28,21 @@ db.init_app(app)
 app.register_blueprint(auth_bp)
 app.register_blueprint(product_bp)
 app.register_blueprint(order_bp)
+
+# Correction des redirections derrière un reverse proxy (ex: Blent /proxy/5000)
+# SCRIPT_NAME informe Flask du préfixe afin que les URLs générées l'incluent
+_script_name = os.getenv("SCRIPT_NAME", "")
+if _script_name:
+    class _PrefixMiddleware:
+        def __init__(self, wsgi_app, prefix):
+            self.wsgi_app = wsgi_app
+            self.prefix = prefix
+
+        def __call__(self, environ, start_response):
+            environ["SCRIPT_NAME"] = self.prefix
+            return self.wsgi_app(environ, start_response)
+
+    app.wsgi_app = _PrefixMiddleware(app.wsgi_app, _script_name)
 
 # Implémentation d'un swagger pour améliorer la doc et la clarté utilisateur
 swagger = Swagger(app, template={
