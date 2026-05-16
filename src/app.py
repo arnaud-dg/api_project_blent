@@ -68,5 +68,6 @@ def welcome():
 
 
 if __name__ == "__main__":
-    print(" * API Docs  : http://127.0.0.1:5000/apidocs/")
+    base_url = os.getenv("PUBLIC_URL", "http://127.0.0.1:5000")
+    print(f" * API Docs  : {base_url}/apidocs/")
     app.run()
