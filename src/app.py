@@ -65,3 +65,8 @@ swagger = Swagger(app, template={
 @app.route("/")
 def welcome():
     return "Bienvenue sur le portail client de l'application e-commerce ParaShop"
+
+
+if __name__ == "__main__":
+    print(" * API Docs  : http://127.0.0.1:5000/apidocs/")
+    app.run()
